@@ -15,6 +15,7 @@ def su(cmds, out_sbatch, out_python, out_json, **kwargs):
   ntasks = kwargs.get('ntasks', 1)
   cpus_per_task = kwargs.get('cpus_per_task', 1)
   gres = kwargs.get('gres', None) # special resources, e.g. GPU
+  partition = kwargs.get('partition', None) # run on a partition
   modules = kwargs.get('modules', [])
 
   n_array = int(ceil(N / per_task)) # number of unique tasks
@@ -51,6 +52,7 @@ def su(cmds, out_sbatch, out_python, out_json, **kwargs):
   print(f'#SBATCH --time={time}', file=fS)
   print(f'#SBATCH --output={output}', file=fS)
   if qos is not None: print(f'#SBATCH --qos={qos}', file=fS)
+  if partition is not None: print(f'#SBATCH --partition {partition}', file=fS)
   print(f'#SBATCH --array=1-{n_array}%{n_concur}', file=fS)
   if gres is not None: print(f'#SBATCH --gres={gres}', file=fS)
   print('', file=fS)
