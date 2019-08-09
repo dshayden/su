@@ -18,8 +18,9 @@ jobs.txt
 >> MakeSlurmJobFiles jobs.txt myjobs --n_concur 2 --time 00:01:00
 >> ls
 jobs.txt myjobs.sbatch myjobs.py myjobs.gzip
->> scp myjobs* username@mycluster:
+>> scp myjobs* username@mycluster:/path/on/nfs
 >> ssh username@mycluster
+>> cd /path/on/nfs
 >> sbatch myjobs.sbatch
 Submitted batch job 12345
 ```
@@ -30,8 +31,9 @@ Submitted batch job 12345
 >>> cmds = ['ls -lah', 'hostname', 'whoami']
 >>> su.MakeJobFiles(cmds, 'myjobs', n_concur=2, time='00:01:00')
 >>> exit()
->> scp myjobs* username@mycluster:
+>> scp myjobs* username@mycluster:/path/on/nfs
 >> ssh username@mycluster
+>> cd /path/on/nfs
 >> sbatch myjobs.sbatch
 Submitted batch job 12345
 ```
