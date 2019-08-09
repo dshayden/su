@@ -38,4 +38,4 @@ Submitted batch job 12345
 
 # Comments
 * Additional documentation on nearly all keyword arguments can be found at [the SLURM website](https://slurm.schedmd.com/documentation.html)
-* This library doesn't give access to --ntasks and --nodes because everything is treated as a [job array](https://slurm.schedmd.com/job_array.html). If you have 10 commands to run and you pass --n_concur 2 --per_task 3, then there will be ceil(10 / 3) = 4 jobs in the array, and all but one will execute 3 commands in sequence, and the final will execute the remaining one command.
+* This library doesn't give access to --ntasks and --nodes because everything is treated as a [job array](https://slurm.schedmd.com/job_array.html). If you have 10 commands to run and you pass --n_concur 2 --per_task 3, then there will be ceil(10 / 3) = 4 jobs in the array, and all but one will execute 3 commands in sequence, and the final job will execute the remaining one command. Two jobs will be executed at a time.
