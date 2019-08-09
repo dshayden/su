@@ -1,0 +1,45 @@
+#!/usr/bin/python
+import argparse, su
+
+if __name__ == "__main__":
+  parser = argparse.ArgumentParser(description='Make SLURM sbatch file ' + \
+    'with a helper calling python program and gzipped set of jobs.' + \
+    '  Can then run on cluster with >> sbatch {outputPrefix}.sbatch')
+  parser.add_argument('job_file', type=str,
+    help='file with shell commands, one per line. Each represents a job.')
+  parser.add_argument('outputPrefix', type=str,
+    help='prefix for the output files: *.sbatch, *.py, *.gzip')
+  parser.add_argument('--n_concur', type=int, default=1,
+    help='how many jobs done concurrently')
+  parser.add_argument('--per_task', type=int, default=1,
+    help='how many jobs for a single task i.e. chunking factor')
+  parser.add_argument('--time', default=None,
+    help='max time hh:mm:ss for each chunk of jobs in job array')
+  parser.add_argument('--qos', default=None,
+    help='string qos to run under, default for cluster if not specified')
+  parser.add_argument('--cpus_per_task', type=int, default=1,
+    help='number CPU cores for each chunk of jobs in job array')
+  parser.add_argument('--mem_per_cpu', type=str, default='1gb',
+    help='RAM allocated per CPU')
+  parser.add_argument('--gres', default=None,
+    help='generic resources, e.g. GPU')
+  parser.add_argument('--no_output_job_header', action='store_false',
+    help='suppress header for each job in stdout')
+  parser.add_argument('--output', type=str, default='out_%A_%5a.out',
+    help='capture stdout and stderr to out_<job_id>_<run_id>.out by default')
+  parser.add_argument('--partition', default=None,
+    help='run on a specified partition')
+  parser.add_argument('--modules', action='append',
+    help='load modules as part of job, only for clusters with support for ' + \
+      'http://modules.sourceforge.net/')
+  
+  args = parser.parse_args()
+
+  # read jobs file, one per line
+  cmds = [line.rstrip('\n') for line in open(args.job_file)]
+
+  # pass keyword args as dictionary, removing positional args
+  outputPrefix = args.outputPrefix
+  argsDict = vars(args)
+  del argsDict['outputPrefix']
+  su.MakeJobFiles(cmds, outputPrefix, **argsDict)
